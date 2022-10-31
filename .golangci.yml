@@ -1,0 +1,12 @@
+linters:
+  enable:
+    - errcheck
+    - goimports
+    - govet
+    - staticcheck
+    - wrapcheck
+    - wsl
+    - nilnil
+    - godot
+    - unconvert
+    - stylecheck
