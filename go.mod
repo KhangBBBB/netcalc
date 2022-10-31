@@ -1,4 +1,4 @@
-module netcalc
+module github.com/KhangBBBB/netcalc
 
 go 1.19
 
