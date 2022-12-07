@@ -67,7 +67,7 @@ func (a *Application) Layout(gtx layout.Context) layout.Dimensions {
 			spacer := layout.Rigid(layout.Spacer{Height: padding1}.Layout)
 
 			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				layout.Rigid(Heading(a.Theme, "Convert IPv4 dotted decimal to hexadecimal and binary:").Layout),
+				layout.Rigid(Heading(a.Theme, "Convert between IPv4 dot decimal, hexadecimal, and binary formats").Layout),
 				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 					return a.IPv4DecHexBinConverter.Layout(a.Theme, gtx)
 				}),
