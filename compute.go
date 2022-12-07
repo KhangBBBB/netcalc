@@ -48,6 +48,54 @@ func IPv4ToBinFormat(ipAddress string) (string, error) {
 	return buf.String(), nil
 }
 
+func BinToIPv4Format(binNumber string) (string, error) {
+	trimmedBinNumber := strings.ReplaceAll(binNumber, " ", "")
+	if len(trimmedBinNumber) != 32 {
+		return "", errors.New("BinToIPv4Format: binNumber is invalid")
+	}
+
+	var ipv4 bytes.Buffer
+
+	for i := 0; i < 32; i += 8 {
+		decValue, err := strconv.ParseInt(trimmedBinNumber[i:i+8], 2, 64)
+		if err != nil {
+			return "", errors.New("BinToIPv4Format: binNumber is invalid")
+		}
+
+		ipv4.WriteString(fmt.Sprintf("%d", decValue))
+
+		if i < 24 {
+			ipv4.WriteString(".")
+		}
+	}
+
+	return ipv4.String(), nil
+}
+
+func HexToIPv4Format(hexNumber string) (string, error) {
+	trimmedHexNumber := strings.ReplaceAll(hexNumber, " ", "")
+	if len(trimmedHexNumber) != 8 {
+		return "", errors.New("HexToIPv4Format: hexNumber is invalid")
+	}
+
+	var ipv4 bytes.Buffer
+
+	for i := 0; i < 8; i += 2 {
+		decValue, err := strconv.ParseInt(trimmedHexNumber[i:i+2], 16, 64)
+		if err != nil {
+			return "", errors.New("HexToIPv4Format: hexNumber is invalid")
+		}
+
+		ipv4.WriteString(fmt.Sprintf("%d", decValue))
+
+		if i < 6 {
+			ipv4.WriteString(".")
+		}
+	}
+
+	return ipv4.String(), nil
+}
+
 func NetworkMaskToCIDRSlashValue(netMask string) (string, error) {
 	ipv4 := net.ParseIP(netMask)
 	if ipv4 == nil {

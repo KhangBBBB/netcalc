@@ -24,7 +24,7 @@ var padding3 = unit.Dp(2)
 type Application struct {
 	Theme *material.Theme
 
-	IPv4DecToHexBinConverter  IPv4DecToHexBinConverter
+	IPv4DecHexBinConverter    IPv4DecHexBinConverter
 	NetMaskCIDRSlashConverter NetMaskCIDRSlashConverter
 	NetAddrFinder             NetAddrFinder
 	IPInfoChecker             IPInfoChecker
@@ -69,7 +69,7 @@ func (a *Application) Layout(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Rigid(Heading(a.Theme, "Convert IPv4 dotted decimal to hexadecimal and binary:").Layout),
 				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-					return a.IPv4DecToHexBinConverter.Layout(a.Theme, gtx)
+					return a.IPv4DecHexBinConverter.Layout(a.Theme, gtx)
 				}),
 				spacer,
 				layout.Rigid(Heading(a.Theme, "Convert between network mask and CIDR slash value:").Layout),
@@ -101,29 +101,51 @@ func (a *Application) Layout(gtx layout.Context) layout.Dimensions {
 	})
 }
 
-type IPv4DecToHexBinConverter struct {
-	Dec      Field
-	Hex      widget.Clickable
-	HexValue string
-	Bin      widget.Clickable
-	BinValue string
+type IPv4DecHexBinConverter struct {
+	Dec Field
+	Hex Field
+	Bin Field
 }
 
-func (conv *IPv4DecToHexBinConverter) Layout(th *material.Theme, gtx layout.Context) layout.Dimensions {
+func (conv *IPv4DecHexBinConverter) Layout(th *material.Theme, gtx layout.Context) layout.Dimensions {
 	if conv.Dec.Changed() {
-		var err error
-
-		conv.HexValue, err = IPv4ToHexFormat(conv.Dec.Text())
+		hexValue, err := IPv4ToHexFormat(conv.Dec.Text())
 		conv.Dec.Invalid = err != nil
+		conv.Hex.SetText(hexValue)
 
-		conv.BinValue, err = IPv4ToBinFormat(conv.Dec.Text())
+		binValue, err := IPv4ToBinFormat(conv.Dec.Text())
 		conv.Dec.Invalid = err != nil
+		conv.Bin.SetText(FormatBinInNimbles(binValue))
 	}
 
-	if conv.Hex.Clicked() {
-		clipboard.WriteOp{Text: conv.HexValue}.Add(gtx.Ops)
-	} else if conv.Bin.Clicked() {
-		clipboard.WriteOp{Text: conv.BinValue}.Add(gtx.Ops)
+	if conv.Hex.Changed() {
+		ipv4Value, err := HexToIPv4Format(conv.Hex.Text())
+		conv.Hex.Invalid = err != nil
+
+		if conv.Hex.Invalid {
+			conv.Dec.SetText("")
+			conv.Bin.SetText("")
+		} else {
+			conv.Dec.SetText(ipv4Value)
+
+			binValue, _ := IPv4ToBinFormat(ipv4Value)
+			conv.Bin.SetText(binValue)
+		}
+	}
+
+	if conv.Bin.Changed() {
+		ipv4Value, err := BinToIPv4Format(conv.Bin.Text())
+		conv.Bin.Invalid = err != nil
+
+		if conv.Bin.Invalid {
+			conv.Dec.SetText("")
+			conv.Hex.SetText("")
+		} else {
+			conv.Dec.SetText(ipv4Value)
+
+			hexValue, _ := IPv4ToHexFormat(ipv4Value)
+			conv.Hex.SetText(hexValue)
+		}
 	}
 
 	spacer := layout.Rigid(layout.Spacer{Width: padding2}.Layout)
@@ -138,13 +160,13 @@ func (conv *IPv4DecToHexBinConverter) Layout(th *material.Theme, gtx layout.Cont
 		layout.Rigid(material.Body1(th, "Hex:").Layout),
 		spacer,
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-			return material.Clickable(gtx, &conv.Hex, material.Body1(th, conv.HexValue).Layout)
+			return conv.Hex.Layout(th, gtx)
 		}),
 		spacer,
 		layout.Rigid(material.Body1(th, "Bin:").Layout),
 		spacer,
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-			return material.Clickable(gtx, &conv.Bin, material.Body1(th, conv.BinValue).Layout)
+			return conv.Bin.Layout(th, gtx)
 		}),
 	)
 }
