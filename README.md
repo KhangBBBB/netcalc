@@ -6,9 +6,12 @@ netcalc is a cross-platform GUI written in Go for network calculation.
 
 # Installation
 
-```
-go install https://github.com/KhangBBBB/netcalc
-```
+You can download pre-built binaries from Releases.
+
+You can also build, install, and run the binary from source:
+
+    $ go install github.com/KhangBBBB/netcalc@latest
+    $ netcalc
 
 # Status
 
