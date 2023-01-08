@@ -13,7 +13,7 @@ func main() {
 
 	go func() {
 		w := app.NewWindow(
-			app.Title("netcalc v0.0.5"),
+			app.Title("netcalc v0.1.0"),
 			app.Size(unit.Dp(650), unit.Dp(380)),
 		)
 		if err := application.Run(w); err != nil {
