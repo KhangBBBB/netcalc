@@ -1,4 +1,4 @@
-# About
+# About netcalc
 
 netcalc is a cross-platform GUI written in Go for network calculation.
 
