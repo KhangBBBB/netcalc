@@ -1,6 +1,6 @@
-# About netcalc
+# About netcalc application
 
-netcalc is a cross-platform GUI written in Go for network calculation.
+netcalc is a cross-platform GUI written in Go for network calculation in order to study networking.
 
 ![netcalc screenshot on macOS](https://github.com/KhangBBBB/netcalc/blob/main/images/netcalc-v0.1.0-mac.png)
 
