@@ -17,3 +17,4 @@ You can also build, install, and run the binary from source:
 
 netcalc is a beta software, so users should use it with caution.
 We have only tested it on Windows and macOS.
+We can use to better manage networking
